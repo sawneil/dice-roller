@@ -1,20 +1,29 @@
 import random
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
-@app.route('/')
-def roll():
+def roll_dice():
     die1 = random.randint(1, 6)
     die2 = random.randint(1, 6)
     total = die1 + die2
-    if total in (7, 11):
+    if die1 == 1 and die2 == 1:
+        outcome = "Snake eyes!"
+    elif total in (7, 11):
         outcome = "Natural — you win!"
     elif total in (2, 3, 12):
         outcome = "Craps — you lose!"
     else:
         outcome = f"Point is {total}"
     return {"die1": die1, "die2": die2, "total": total, "outcome": outcome}
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/roll')
+def roll():
+    return roll_dice()
 
 @app.route('/health')
 def health():
